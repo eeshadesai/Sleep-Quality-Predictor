@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sleep Quality Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>Sleep quality score</h1>
+      <p class="lede">
+        Enter your details below.
+      </p>
+    </header>
+
+    {% if error %}
+    <div class="banner banner-error" role="alert">{{ error }}</div>
+    {% endif %}
+
+    {% if result is not none %}
+    <div class="banner banner-result" role="status">
+      <span class="label">Predicted sleep quality</span>
+      <span class="score">{{ result }}</span>
+    </div>
+    {% endif %}
+
+    {% if recommendations %}
+    <section class="card rec-card" aria-labelledby="rec-heading">
+      <h2 id="rec-heading" class="rec-title">Suggestions</h2>
+      <ul class="rec-list">
+        {% for line in recommendations %}
+        <li>{{ line }}</li>
+        {% endfor %}
+      </ul>
+      <p class="rec-footer"><a href="{{ url_for('recent') }}">See your recent results →</a></p>
+    </section>
+    {% endif %}
+
+    <form class="card" method="post" action="{{ url_for('index') }}" novalidate>
+      <div class="grid">
+        <label class="field">
+          <span>Age</span>
+          <input type="number" name="age" min="1" max="120" required value="{{ form.age }}" placeholder="e.g. 34" />
+        </label>
+        <label class="field">
+          <span>Gender</span>
+          <select name="gender">
+            <option value="Male" {% if form.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if form.gender == 'Female' %}selected{% endif %}>Female</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Sleep duration (hours)</span>
+          <input type="number" name="sleep_duration" step="0.05" min="0" max="24" required value="{{ form.sleep_duration }}" placeholder="e.g. 7.5" />
+        </label>
+        <label class="field">
+          <span>Physical activity level (0-100)</span>
+          <input type="number" name="physical_activity" min="0" max="120" required value="{{ form.physical_activity }}" placeholder="e.g. 60 (dataset ~30–90)" />
+        </label>
+        <label class="field">
+          <span>Daily steps</span>
+          <input type="number" name="daily_steps" min="0" required value="{{ form.daily_steps }}" placeholder="e.g. 6500" />
+        </label>
+        <label class="field field-span">
+          <span>Occupation</span>
+          <select name="occupation">
+            {% for occ in occupations %}
+            <option value="{{ occ }}" {% if form.occupation == occ %}selected{% endif %}>{{ occ }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <button type="submit" class="submit">Predict sleep quality</button>
+    </form>
+  </div>
+</body>
+</html>

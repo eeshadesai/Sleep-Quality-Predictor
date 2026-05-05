@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recent results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="page page-wide">
+    <header class="hero">
+      <h1>Recent results</h1>
+      <p class="lede"><a href="{{ url_for('index') }}">← Back to predictor</a></p>
+    </header>
+
+    {% if not rows %}
+    <p class="muted-p">Nothing here yet — complete a check on the home page first.</p>
+    {% else %}
+    <div class="table-wrap card card-flat">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>When (UTC)</th>
+            <th>Score</th>
+            <th>Sleep h</th>
+            <th>Activity</th>
+            <th>Steps</th>
+            <th>Recommendations</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td class="nowrap">{{ r.created_at[:19] }}</td>
+            <td>{{ r.predicted_score }}</td>
+            <td>{{ r.sleep_duration }}</td>
+            <td>{{ r.physical_activity }}</td>
+            <td>{{ r.daily_steps }}</td>
+            <td class="rec-cell">
+              <ul class="compact-list">
+                {% for line in r.recommendations %}
+                <li>{{ line }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
