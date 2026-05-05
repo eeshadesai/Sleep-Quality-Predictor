@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import pandas as pd
 
-# Near observed ranges in Sleep_Data_Sampled.csv (slightly expanded for search)
 SLEEP_MIN, SLEEP_MAX = 5.5, 9.0
 PAL_MIN, PAL_MAX = 25, 120
 STEPS_MIN, STEPS_MAX = 2000, 12000
@@ -82,7 +81,6 @@ def compute_recommendations(
 
     candidates: list[tuple[float, str]] = []
 
-    # Sleep duration — try hourly-ish steps from current
     for delta in (-1.5, -1.25, -1.0, -0.75, -0.5, -0.25, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5):
         new_sleep = round(sleep_duration + delta, 2)
         if new_sleep < SLEEP_MIN or new_sleep > SLEEP_MAX:
@@ -109,7 +107,6 @@ def compute_recommendations(
                 )
             )
 
-    # Physical activity level
     for delta in (-20, -15, -10, -5, 5, 10, 15, 20):
         new_pal = physical_activity + delta
         if new_pal < PAL_MIN or new_pal > PAL_MAX:
@@ -136,7 +133,6 @@ def compute_recommendations(
                 )
             )
 
-    # Daily steps
     for delta in (-2500, -2000, -1500, -1000, -500, 500, 1000, 1500, 2000, 2500):
         new_steps = daily_steps + delta
         if new_steps < STEPS_MIN or new_steps > STEPS_MAX:
@@ -164,7 +160,6 @@ def compute_recommendations(
 
     candidates.sort(key=lambda x: x[0], reverse=True)
 
-    # Keep diverse tips: best per category keyword (sleep / activity / steps)
     picked: list[str] = []
     seen_kind = set()
     for gain, text in candidates:
